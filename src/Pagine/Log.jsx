@@ -1,83 +1,200 @@
-import { Button, Tab, Tabs, TextField } from "@mui/material";
-import React, { useState } from "react";
-import m1 from "../img/mountain1.jpg";
-import m2 from "../img/mountain2.jpg";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { url } from "../functions/Url";
+import { useNavigate } from "react-router-dom";
+import { Alert, Collapse, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 function Log() {
-  const [Selecetion, setSelecetion] = useState(false); //0 => login | 1 => registration
   const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showError, setError] = useState(false);
+  const navigate = useNavigate();
 
-  const handleChange = (event, newValue) => {
-    setSelecetion(newValue);
-  };
+  function spostaGrafica() {
+    var height = document.getElementById("RegForm").clientHeight - 100.8;
+    document.getElementById("loginForm").style.paddingBottom =
+      height.toString() + "px";
+  }
+
+  useEffect(() => {
+    if (!loading) {
+      spostaGrafica();
+    }
+  }, [loading]);
+
+  function log() {
+    setLoading(true);
+    axios
+      .get(url + "SearchForUtente.php?P=" + Password + "&E=" + Email)
+      .then((response) => {
+        setLoading(false);
+        if (response.data !== null) {
+          localStorage.setItem("IDSiga",response.data["ID"]);
+          navigate("/");
+        }
+
+        setError(true);
+      });
+  }
+
+  function Reg() {
+    setLoading(true);
+    axios
+      .put(url + "CreaUtente.php?P=" + Password + "&E=" + Email + "&N=" + Name)
+      .then((response) => {
+        
+        log();
+
+        setError(true);
+      });
+  }
 
   return (
     <div>
-      <Tabs
-        value={Selecetion}
-        onChange={handleChange}
-        textColor="secondary"
-        indicatorColor="secondary"
-        aria-label="secondary tabs example"
-      >
-        <Tab value={true} label="Item One" />
-        <Tab value={false} label="Item Two" />
-      </Tabs>
-      {Selecetion ? (
-        <div className="InputBox">
-          <div className="input">
-            <TextField
-              id="standard-basic"
-              value={Email}
-              onChange={(e) => setEmail(e.target.value)}
-              label="Email"
-              variant="standard"
-            />
-            <TextField
-              id="standard-basic"
-              label="Password"
-              value={Password}
-              onChange={(e) => setPassword(e.target.value)}
-              variant="standard"
-            />
-            <Button variant="contained">Invia</Button>
+      <Collapse id="errorContainer" className="alert" in={showError}>
+        <Alert
+          severity="error"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setError(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          Errore!
+          <br />
+          Controlla i dati, oppure Registrati!
+        </Alert>
+      </Collapse>
+      <div className="main">
+        {loading ? (
+          <svg className="pl" width="240" height="240" viewBox="0 0 240 240">
+            <circle
+              className="pl__ring pl__ring--a"
+              cx="120"
+              cy="120"
+              r="105"
+              fill="none"
+              stroke="#000"
+              strokeWidth="20"
+              strokeDasharray="0 660"
+              strokeDashoffset="-330"
+              strokeLinecap="round"
+            ></circle>
+            <circle
+              className="pl__ring pl__ring--b"
+              cx="120"
+              cy="120"
+              r="35"
+              fill="none"
+              stroke="#000"
+              strokeWidth="20"
+              strokeDasharray="0 220"
+              strokeDashoffset="-110"
+              strokeLinecap="round"
+            ></circle>
+            <circle
+              className="pl__ring pl__ring--c"
+              cx="85"
+              cy="120"
+              r="70"
+              fill="none"
+              stroke="#000"
+              strokeWidth="20"
+              strokeDasharray="0 440"
+              strokeLinecap="round"
+            ></circle>
+            <circle
+              className="pl__ring pl__ring--d"
+              cx="155"
+              cy="120"
+              r="70"
+              fill="none"
+              stroke="#000"
+              strokeWidth="20"
+              strokeDasharray="0 440"
+              strokeLinecap="round"
+            ></circle>
+          </svg>
+        ) : (
+          <div>
+            <input type="checkbox" id="chk" aria-hidden="true" />
+
+            <div className="login" id="loginForm">
+              <form className="form">
+                <label htmlFor="chk" aria-hidden="true">
+                  Log in
+                </label>
+                <input
+                  className="input"
+                  type="email"
+                  name="email"
+                  value={Email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  required=""
+                />
+                <input
+                  className="input"
+                  type="password"
+                  name="pswd"
+                  value={Password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  required=""
+                />
+                <button onClick={() => log()}>Log in</button>
+              </form>
+            </div>
+
+            <div className="register">
+              <form className="form" id="RegForm">
+                <label htmlFor="chk" aria-hidden="true">
+                  Register
+                </label>
+                <input
+                  className="input"
+                  type="text"
+                  value={Name}
+                  onChange={(e) => setName(e.target.value)}
+                  name="txt"
+                  placeholder="Username"
+                  required=""
+                />
+                <input
+                  className="input"
+                  type="email"
+                  value={Email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  name="email"
+                  placeholder="Email"
+                  required=""
+                />
+                <input
+                  className="input"
+                  type="password"
+                  name="pswd"
+                  value={Password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  required=""
+                />
+                <button onClick={() => Reg()}>Register</button>
+              </form>
+            </div>
           </div>
-          
-            <img className="img" src={m1} alt="m1" />
-          
-        </div>
-      ) : (
-        <div className="InputBox">
-          <div className="input">
-            <TextField
-              id="standard-basic"
-              label="Nome"
-              value={Name}
-              onChange={(e) => setName(e.target.value)}
-              variant="standard"
-            />
-            <TextField
-              id="standard-basic"
-              label="Email"
-              value={Email}
-              onChange={(e) => setEmail(e.target.value)}
-              variant="standard"
-            />
-            <TextField
-              id="standard-basic"
-              label="Password"
-              value={Password}
-              onChange={(e) => setPassword(e.target.value)}
-              variant="standard"
-            />
-            <Button variant="contained">Invia</Button>
-          </div>
-            <img className="img" src={m2} alt="m2" />
-          
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
