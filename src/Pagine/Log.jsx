@@ -160,7 +160,7 @@ function Log() {
             <div className="register">
               <form className="form" id="RegForm">
                 <label htmlFor="chk" aria-hidden="true">
-                  Register
+                  Registrazione
                 </label>
                 <input
                   className="input"
@@ -189,7 +189,7 @@ function Log() {
                   placeholder="Password"
                   required=""
                 />
-                <button onClick={() => Reg()}>Register</button>
+                <button onClick={() => Reg()}>Registrati</button>
               </form>
             </div>
           </div>
