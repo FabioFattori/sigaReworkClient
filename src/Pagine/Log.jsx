@@ -4,6 +4,7 @@ import { url } from "../functions/Url";
 import { useNavigate } from "react-router-dom";
 import { Alert, Collapse, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { SetUser } from "../functions/User.js";
 
 function Log() {
   const [Name, setName] = useState("");
@@ -32,7 +33,9 @@ function Log() {
       .then((response) => {
         setLoading(false);
         if (response.data !== null) {
-          localStorage.setItem("IDSiga",response.data["ID"]);
+          console.log(response.data);
+          SetUser(response.data["Nome"]);
+          localStorage.setItem("IDSiga", response.data["ID"]);
           navigate("/");
         }
 
@@ -45,7 +48,6 @@ function Log() {
     axios
       .put(url + "CreaUtente.php?P=" + Password + "&E=" + Email + "&N=" + Name)
       .then((response) => {
-        
         log();
 
         setError(true);
