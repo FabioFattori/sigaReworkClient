@@ -14,7 +14,6 @@ function GetData(ID) {
 }
 
 function GetDate() {
-  console.log(arrDate)
     return arrDate;
 }
 
