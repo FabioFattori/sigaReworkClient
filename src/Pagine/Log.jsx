@@ -33,10 +33,13 @@ function Log() {
       .then((response) => {
         setLoading(false);
         if (response.data !== null) {
-          console.log(response.data);
           SetUser(response.data["Nome"]);
           localStorage.setItem("IDSiga", response.data["ID"]);
-          navigate("/");
+          axios
+            .put(url + "friendOfMyself.php?I=" + response.data["ID"])
+            .then(() => {
+              navigate("/");
+            });
         }
 
         setError(true);

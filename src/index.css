@@ -521,17 +521,45 @@ label {
   background-color: var(--lightPurple);
 }
 
-
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
   border-radius: 25px;
   background-color: var(--purple);
 }
 
-
 @media (max-width: 1040px) {
   .rowOfContent {
-    display:flex;
+    display: flex;
     flex-direction: column;
-  
   }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: -10px;
+}
+
+.MuiDataGrid-row{
+  color: var(--white) !important;
+}
+
+.MuiDataGrid-virtualScrollerContent{
+  color: var(--white) !important;
+}
+
+.MuiDataGrid-root{
+  color: var(--white) !important;
+  border-color: rgba(224, 224, 224, 0) !important;
+}
+
+.MuiCheckbox-root{
+  color: var(--white) !important;
+}
+
+.MuiToolbar-root{
+  color: var(--white) !important;
+}
+
+.MuiSvgIcon-root{
+  color: var(--white) !important;
 }

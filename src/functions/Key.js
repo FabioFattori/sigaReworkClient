@@ -1,0 +1,8 @@
+const key =
+  "ASDINJASUIDBHNAUISBDASBDYUASUIDBAUISDBHAUISDHUIASDHIASBDHDYAUSVYSDVTYUDVUW";
+
+function getKey() {
+  return key;
+}
+
+export { getKey };

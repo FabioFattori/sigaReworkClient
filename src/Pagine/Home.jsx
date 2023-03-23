@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { url } from "../functions/Url";
-import { Drawer, IconButton } from "@mui/material";
+import { Button, Collapse, Drawer, IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import ReactECharts from "echarts-for-react";
@@ -13,6 +13,9 @@ import Dialog from "@mui/material/Dialog";
 import InfoIcon from "@mui/icons-material/Info";
 import { GetUser } from "../functions/User";
 import { Check } from "../functions/CheckYesterday";
+import Alert from "@mui/material/Alert";
+import CloseIcon from "@mui/icons-material/Close";
+import PeopleIcon from "@mui/icons-material/People";
 
 function Home() {
   const navigate = useNavigate();
@@ -21,6 +24,8 @@ function Home() {
   const [arrDate, setDate] = useState();
   const [arrSiga, setSigs] = useState();
   const [open, setOpen] = useState(false);
+  const [openAler, setAler] = useState(false);
+  const [severity, setSeverity] = useState("info");
 
   const handleClose = () => {
     setOpen(!open);
@@ -75,16 +80,28 @@ function Home() {
           setNSiga(response.data["nSiga"]);
           setDate(GetDate());
           setSigs(GetSigs());
-          Check();
         });
 
         axios.get(url + "GetMode.php?I=" + id).then((response) => {
-          if (response.data.ModalitàCiminiera == 0) {
+          if (response.data.ModalitàCiminiera === 0) {
             setMode(false);
             axios
               .get(url + "GetCammelliHealtCare.php?I=" + id)
               .then((response) => {
                 setCammelli(response.data.CammelliHealtCare);
+                var c = response.data.CammelliHealtCare + 10;
+                if (Check()) {
+                  setSeverity("success");
+                  axios.put(
+                    url +
+                      "UpdateCammelliHealt.php?I=" +
+                      localStorage.getItem("IDSiga") +
+                      "&N=" +
+                      c
+                  );
+
+                  setAler(true);
+                }
               });
           } else {
             setMode(true);
@@ -189,6 +206,7 @@ function Home() {
     }
   }
 
+  //gestione Mode
   const HandleChange = (e) => {
     var i = 0;
     if (!Mode) {
@@ -225,17 +243,37 @@ function Home() {
 
   return (
     <div className="AllContainer">
+      <Collapse in={openAler}>
+        <Alert
+          severity={severity}
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setAler(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 2 }}
+        >
+          Hai Guadagnato 10 cammelli per aver fumato meno!
+        </Alert>
+      </Collapse>
       <Dialog onClose={handleClose} open={open}>
         <DialogTitle>
           Modalità Ciminiera:
           <br />
-          Ogni Sigaretta Fumata equivale a 5 cammello in più, quindi più fumi e
+          Ogni Sigaretta Fumata equivale a 5 cammelli in più, quindi più fumi e
           più ottiene cammelli!
         </DialogTitle>
         <DialogTitle>
           Modalità HealtCare:
           <br />
-          Ogni Sigaretta Fumata equivale a -5 cammello, quindi più fumi e meno
+          Ogni Sigaretta Fumata equivale a -5 cammelli, quindi più fumi e meno
           ottiene cammelli!
         </DialogTitle>
       </Dialog>
@@ -257,7 +295,17 @@ function Home() {
           onClose={toggleDrawer("left", false)}
         >
           <div className="Menu">
-            <h1>{GetUser()}</h1>
+            <IconButton
+              aria-label="delete"
+              size="large"
+              onClick={toggleDrawer("left", false)}
+            >
+              <CloseIcon className="iconMenu" />
+            </IconButton>
+            <div className="nav">
+              <h3>Nome Utente:</h3>
+              <h2>{GetUser()}</h2>
+            </div>
             <div className="row">
               <h1>Modalità Ciminiera:</h1>
               <IconButton aria-label="delete" onClick={() => setOpen(true)}>
@@ -279,6 +327,15 @@ function Home() {
               <input type="checkbox" onChange={HandleChange} checked={!Mode} />
               <span className="slider"></span>
             </label>
+            <Button
+              style={{ marginTop: "30px", backgroundColor: "#240046" }}
+              variant="contained"
+              startIcon={<PeopleIcon />}
+              fullWidth
+              onClick={() => navigate("/ListaAmici")}
+            >
+              Lista amici
+            </Button>
           </div>
         </Drawer>
       </React.Fragment>

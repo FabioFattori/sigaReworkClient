@@ -4,11 +4,16 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Log from "./Pagine/Log";
 import Home from "./Pagine/Home";
+import ListaAmici from "./Pagine/ListaAmici";
 
 const router = createBrowserRouter([
   {
     path: "/Login",
     element: <Log />,
+  },
+  {
+    path: "/ListaAmici",
+    element: <ListaAmici />,
   },
   {
     path: "/",

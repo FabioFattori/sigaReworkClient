@@ -1,10 +1,9 @@
-var nomeUser;
 function GetUser() {
-  return nomeUser;
+  return localStorage.getItem("%Bnas");
 }
 
 function SetUser(value) {
-  nomeUser = value;
+  localStorage.setItem("%Bnas", value);
 }
 
 export { GetUser, SetUser };
