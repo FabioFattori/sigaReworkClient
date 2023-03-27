@@ -6,7 +6,8 @@ import TabellaUser from "../Components/TabellaUser";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-//import QRCodeReader from "../Components/QRCodeReader";
+import { QrCodeReader } from "../Components/QRCodeReader";
+import QRCodeGenerator from "../Components/QRCodeGenerator";
 
 function ListaAmici() {
   const navigation = useNavigate();
@@ -53,6 +54,11 @@ function ListaAmici() {
           <ArrowBackIcon className="iconMenu" />
         </IconButton>
       </div>
+      <form className="form" id="RegForm">
+        <label htmlFor="chk" aria-hidden="true">
+          Classifica tra te ed i tuoi amici!
+        </label>
+      </form>
       <div className="rowOfContent">
         <div className="main" style={{ color: "#fff" }}>
           <h1 style={{ display: "flex", justifyContent: "center" }}>
@@ -71,10 +77,15 @@ function ListaAmici() {
           <TabellaUser Friends={Amici} Mode="HealtCare" />
         </div>
       </div>
-
-      {/* <div>
-        <QRCodeReader />
-      </div> */}
+      <form className="form" id="RegForm">
+        <label htmlFor="chk" aria-hidden="true">
+          Aggiungi i tuoi amici oppure fatti aggiungere:
+        </label>
+      </form>
+      <div className="rowOfContent qr">
+        <QrCodeReader />
+        <QRCodeGenerator />
+      </div>
     </div>
   );
 }

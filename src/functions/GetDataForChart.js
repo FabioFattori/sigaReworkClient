@@ -5,6 +5,8 @@ var arrDate = [];
 var arrSiga = [];
 
 function GetData(ID) {
+  arrDate = [];
+  arrSiga = [];
   axios.get(url + "GetAllnSigaOfUser.php?I=" + ID).then((response) => {
     response.data.forEach((element) => {
       arrDate.push(element["Giorno"]);
@@ -14,11 +16,11 @@ function GetData(ID) {
 }
 
 function GetDate() {
-    return arrDate;
+  return arrDate;
 }
 
 function GetSigs() {
-    return arrSiga;
+  return arrSiga;
 }
 
-export { GetDate,GetSigs,GetData };
+export { GetDate, GetSigs, GetData };
