@@ -13,6 +13,7 @@ class QrCodeReader extends Component {
       typeOfAllert: "error",
       messaggeOfAllert: "",
       showAllert: false,
+      messaggeOnError: "",
       id: 0,
       show: false,
       errore: false,
@@ -58,21 +59,18 @@ class QrCodeReader extends Component {
   }
 
   handleScan(data) {
-    this.setState({
-      showAllert: true,
-      typeOfAllert: "error",
-      messaggeOfAllert: {data},
-    });
-    this.Request(data);
+    this.Request(JSON.parse(data)["ID"]);
   }
   handleError(err) {
     this.setState({
+      messaggeOnError: "Fotocamera non disponibile",
       errore: true,
       result: err,
     });
   }
   render() {
     const previewStyle = {
+      marginTop: "20px",
       height: 240,
       width: 320,
     };
@@ -114,7 +112,7 @@ class QrCodeReader extends Component {
           this.state.errore ? (
             <div>
               <h1 style={{ color: "var(--white)" }}>
-                Fotocamera non disponibile
+                {this.state.messaggeOnError}
               </h1>
               <div className="form__group field">
                 <input
@@ -148,15 +146,30 @@ class QrCodeReader extends Component {
               </div>
             </div>
           ) : (
-            <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+              }}
+            >
               <QrReader
                 delay={this.state.delay}
                 style={previewStyle}
                 onError={this.handleError}
-                onScan={this.handleScan}
+                onScan={(data) => this.handleScan(data)}
                 facingMode={"environment"}
               />
-              <p>{this.state.result}</p>
+              <Button
+                style={{ backgroundColor: "var(--purple)", marginTop: "100px" }}
+                variant="contained"
+                endIcon={<CameraAltIcon />}
+                onClick={() =>
+                  this.setState({ errore: true, messaggeOnError: "" })
+                }
+              >
+                Invia richiesta manualmente
+              </Button>
             </div>
           )
         ) : null}
